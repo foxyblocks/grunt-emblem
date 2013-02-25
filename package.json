@@ -1,0 +1,10 @@
+{
+  "name": "emblem-grunt",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "~0.4.0",
+    "mocha": "1.4.x",
+    "grunt-simple-mocha": "0.3.x",
+    "jsdom": "0.2.x"
+  }
+}
