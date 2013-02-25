@@ -1,10 +1,19 @@
 {
   "name": "emblem-grunt",
   "version": "0.1.0",
+  "scripts": {
+    "test": "grunt test"
+  },
   "devDependencies": {
     "grunt": "~0.4.0",
     "mocha": "1.4.x",
     "grunt-simple-mocha": "0.3.x",
-    "jsdom": "0.2.x"
+    "jsdom": "0.2.x",
+    "matchdep": "~0.1.1",
+    "should": "~1.2.2",
+    "grunt-contrib-clean": "~0.4.0"
+  },
+  "dependencies": {
+    "emblem": "~0.1.6"
   }
 }
