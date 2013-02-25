@@ -11,7 +11,8 @@
     "jsdom": "0.2.x",
     "matchdep": "~0.1.1",
     "should": "~1.2.2",
-    "grunt-contrib-clean": "~0.4.0"
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-coffee": "~0.4.1"
   },
   "dependencies": {
     "emblem": "~0.1.6"

@@ -12,6 +12,11 @@ module.exports = (grunt) ->
     clean:
       test: ['tmp']
 
+    coffee:
+      compile:
+        files:
+          'tmp/tasks/emblem.js': 'tasks/emblem.coffee'
+
     emblem:
       compile:
         files:
@@ -33,6 +38,6 @@ module.exports = (grunt) ->
       all: { src: 'test/**/*.coffee' }
 
   # Load the plugin that provides the "uglify" task.
-  grunt.registerTask('test', ['clean', 'emblem', 'simplemocha'])
+  grunt.registerTask('test', ['clean', 'coffee', 'emblem', 'simplemocha'])
 
   # Default task(s).
