@@ -1,13 +1,43 @@
 should = require("should")
 grunt = require("grunt")
 jsdom = require("jsdom")
+
 # precompiler = require("../tasks/lib/ember-template-compiler")
 
 describe 'basic comparison', ->
+  before (done) ->
+    vendorDir = __dirname + "/vendor"
+    jQueryJs = grunt.file.read(vendorDir + "/jquery-1.9.1.js", "utf8")
+    handlebarsJs = grunt.file.read(vendorDir + "/handlebars.runtime.js", "utf8")
+    emberJs = grunt.file.read(vendorDir + "/ember-1.0.0-rc.1.js", "utf8")
+
+    templates = grunt.file.read('tmp/emblem-basic.js')
+
+
+    jsdom.env
+      html: "<div id=\"test\"></div>"
+      src: [jQueryJs, handlebarsJs, emberJs, templates]
+      done: (errors, window) ->
+        $ = window.jQuery
+        Ember = window.Ember
+        Ember.Application.create()
+        ExampleView = Ember.View.extend(templateName: "emblem-basic")
+        exampleView = ExampleView.create(
+          value: "baz"
+          context: Ember.Object.create(
+            subcontext: Ember.Object.create(value: "foo")
+            value: "bar"
+          )
+        )
+        Ember.run ->
+          exampleView.appendTo "#test"
+
+        renderedView = $("#test").text()
+        done()
+
   it 'should work', ->
-    actual = grunt.file.read('tmp/emblem-basic.html')
-    expected = grunt.file.read('test/expected/emblem-basic.html')
-    actual.should.eq expected
+    renderedView.should.include exampleView.get("value")
+
 
 describe.skip "A compiled template", ->
   before (done) ->
@@ -39,6 +69,7 @@ describe.skip "A compiled template", ->
           exampleView.appendTo "#test"
 
         renderedView = $("#test").text()
+
         done()
 
 

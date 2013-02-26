@@ -1,3 +1,5 @@
+require('coffee-script')
+
 module.exports = (grunt) ->
   # Load this plugin's task(s)
   grunt.loadTasks('tasks')
@@ -12,20 +14,16 @@ module.exports = (grunt) ->
     clean:
       test: ['tmp']
 
-    coffee:
-      compile:
-        files:
-          'tmp/tasks/emblem.js': 'tasks/emblem.coffee'
-
     emblem:
       compile:
         files:
-          'tmp/emblem-basic.html': ['test/fixtures/emblem-basic.emblem']
+          'tmp/emblem-basic.js': ['test/fixtures/emblem-basic.emblem']
         options:
           paths:
-            jquery: 'test/vendor/jquery-1.9.0.min.js'
-            ember: 'test/vendor/ember.js'
-            handlebars: 'test/vendor/handlebars.js'
+            jquery: 'test/vendor/jquery-1.9.1.js'
+            ember: 'test/vendor/ember-1.0.0-rc.1.js'
+            emblem: 'test/vendor/emblem.js'
+            handlebars: 'test/vendor/handlebars.runtime.js'
 
     simplemocha:
       options:
@@ -38,6 +36,6 @@ module.exports = (grunt) ->
       all: { src: 'test/**/*.coffee' }
 
   # Load the plugin that provides the "uglify" task.
-  grunt.registerTask('test', ['clean', 'coffee', 'emblem', 'simplemocha'])
+  grunt.registerTask('test', ['clean', 'emblem', 'simplemocha'])
 
   # Default task(s).
