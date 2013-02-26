@@ -1,1 +1,11 @@
-h1.baz = view.value
+p
+  | Here is a view value
+  = view.value
+p
+  | Here is a context value
+  = value
+
+with subcontext
+  p
+    | Here is a subcontext value:
+    = value
