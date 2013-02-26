@@ -2,7 +2,7 @@
   "name": "emblem-grunt",
   "version": "0.1.0",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test --debug"
   },
   "devDependencies": {
     "grunt": "~0.4.0",

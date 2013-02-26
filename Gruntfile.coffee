@@ -19,11 +19,12 @@ module.exports = (grunt) ->
         files:
           'tmp/emblem-basic.js': ['test/fixtures/emblem-basic.emblem']
         options:
+          root: 'test/fixtures/'
           paths:
             jquery: 'test/vendor/jquery-1.9.1.js'
             ember: 'test/vendor/ember-1.0.0-rc.1.js'
             emblem: 'test/vendor/emblem.js'
-            handlebars: 'test/vendor/handlebars.runtime.js'
+            handlebars: 'test/vendor/handlebars-1.0.0-rc.3.js'
 
     simplemocha:
       options:

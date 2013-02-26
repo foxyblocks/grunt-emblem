@@ -31,7 +31,7 @@ module.exports = (grunt) ->
 
       # iterate files, processing partials and templates separately
       f.src.filter(fileExists).forEach (filepath) ->
-        templates.push compileFilepath(filepath, window)
+        templates.push compileFilepath(filepath, window, options.root)
 
       output = partials.concat(templates)
 
@@ -56,15 +56,22 @@ module.exports = (grunt) ->
   ########################################################
   # Compiles the file at provided filepath and returns the output
   ########################################################
-  compileFilepath = (filepath, window) ->
+  compileFilepath = (filepath, window, root) ->
+
     src = grunt.file.read(filepath)
+
     try
+      key = filepath
+        .replace(new RegExp('\\\\', 'g'), '/') #replace backslashes
+        .replace(/\.\w+$/, '')
+        .replace(root, '')
+
       content = window.Emblem.precompile window.Ember.Handlebars, src
-      result = "Ember.TEMPLATES[#{JSON.stringify(filepath)}] =" +
+      result = "Ember.TEMPLATES[#{JSON.stringify(key)}] =" +
                "Ember.Handlebars.template(#{content});" +
                "module.exports = module.id;"
     catch e
-      grunt.log.error e
+      grunt.fail.warn e
       # Warn on and remove invalid source files (if nonull was set).
       grunt.fail.warn "Emblem failed to compile " + filepath + "."
     result

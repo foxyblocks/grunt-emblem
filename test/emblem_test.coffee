@@ -5,10 +5,13 @@ jsdom = require("jsdom")
 # precompiler = require("../tasks/lib/ember-template-compiler")
 
 describe 'basic comparison', ->
+  exampleView = undefined
+  renderedView = undefined
+
   before (done) ->
     vendorDir = __dirname + "/vendor"
     jQueryJs = grunt.file.read(vendorDir + "/jquery-1.9.1.js", "utf8")
-    handlebarsJs = grunt.file.read(vendorDir + "/handlebars.runtime.js", "utf8")
+    handlebarsJs = grunt.file.read(vendorDir + "/handlebars-1.0.0-rc.3.js", "utf8")
     emberJs = grunt.file.read(vendorDir + "/ember-1.0.0-rc.1.js", "utf8")
 
     templates = grunt.file.read('tmp/emblem-basic.js')
