@@ -63,8 +63,6 @@ describe 'using compiled templates', ->
             subcontext:
               value: 'subcontext_value'
 
-          grunt.log.debug template(data)
-
           $("#test").append template(data)
           renderedView = $("#test").text()
           done()

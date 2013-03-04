@@ -23,21 +23,18 @@ module.exports = (grunt) ->
 
     grunt.verbose.writeflags(options, 'Options')
 
-    grunt.log.debug('Ember Enabled: ' + emberEnabled)
-
     @files.forEach (f) ->
       partials = []
       templates = []
 
       # iterate files, processing partials and templates separately
       f.src.filter(fileExists).forEach (filepath) ->
+        src = grunt.file.read(filepath)
+        key = keyForFilePath(filepath, options.root)
+        compiler = if emberEnabled then compileEmber else compileVanilla
+
         try
-          templates.push(
-            if emberEnabled
-              compileEmberFilepath(filepath, window, options.root)
-            else
-              compileFilepath(filepath, window, options.root)
-          )
+          templates.push compiler.call(this, src, window, key)
         catch e
           grunt.fail.warn e
           # Warn on and remove invalid source files (if nonull was set).
@@ -47,13 +44,15 @@ module.exports = (grunt) ->
       output = partials.concat(templates)
 
       if output.length < 1
-        grunt.log.warn "Destination not written because compiled files were empty."
+        grunt.log.warn "
+          Destination not written because compiled
+          files were empty."
       else
         writeOutput(output, f, options.separator)
 
 
   ########################################################
-  ## Writes final output to destination
+  # Writes final output to destination
   ########################################################
   writeOutput = (output, file, separator) ->
 
@@ -68,36 +67,37 @@ module.exports = (grunt) ->
   # Vanilla Compilation -
   # Compiles the file at provided filepath and returns the output
   ########################################################
-  compileFilepath = (filepath, window, root) ->
-    key = filepath
-      .replace(new RegExp('\\\\', 'g'), '/') #replace backslashes
-      .replace(/\.\w+$/, '')
-      .replace(root, '')
-    src = grunt.file.read(filepath)
+  compileVanilla = (src, window, key) ->
     content = window.Emblem.precompile window.Handlebars, src
 
-    result = "var templates = Handlebars.templates = Handlebars.templates || {}; templates['#{key}'] = Handlebars.template(#{content})"
-
+    """
+    var templates = Handlebars.templates = Handlebars.templates || {};
+    templates['#{key}'] = Handlebars.template(#{content});
+    """
 
   ########################################################
   # Ember Compilation
   ########################################################
-  compileEmberFilepath = (filepath, window, root) ->
-    src = grunt.file.read(filepath)
+  compileEmber = (src, window, key) ->
+    key = JSON.stringify(key)
+    content = window.Emblem.precompile window.Ember.Handlebars, src
+
+    " Ember.TEMPLATES[#{key}] = Ember.Handlebars.template(#{content});
+    module.exports = module.id"
+
+  ########################################################
+  # Key for given filepath
+  ########################################################
+  keyForFilePath = (filepath, root) ->
     key = filepath
       .replace(new RegExp('\\\\', 'g'), '/') #replace backslashes
       .replace(/\.\w+$/, '')
       .replace(root, '')
 
-    content = window.Emblem.precompile window.Ember.Handlebars, src
-    result = "Ember.TEMPLATES[#{JSON.stringify(key)}] =" +
-             "Ember.Handlebars.template(#{content});" +
-             "module.exports = module.id;"
-
-
   ########################################################
   # Filters out missing files
   ########################################################
+
   fileExists = (filepath) ->
     unless grunt.file.exists(filepath)
       grunt.log.warn "Source file \"" + filepath + "\" not found."
