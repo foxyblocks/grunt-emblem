@@ -1,13 +1,17 @@
 jsdom = require 'jsdom'
 
 module.exports = (grunt) ->
+  _ = grunt.util._
   description = 'Compile emblem templates into Handlebars.'
 
   grunt.registerMultiTask 'emblem', description, ->
     window = jsdom.jsdom().createWindow()
 
 
-    options = @options()
+    options = @options(
+      separator: grunt.util.linefeed + grunt.util.linefeed
+    )
+
 
     if options.paths.jquery
       window.run grunt.file.read options.paths.jquery, 'utf8'
@@ -31,15 +35,24 @@ module.exports = (grunt) ->
       f.src.filter(fileExists).forEach (filepath) ->
         src = grunt.file.read(filepath)
         key = keyForFilePath(filepath, options.root)
+
         compiler = if emberEnabled then compileEmber else compileVanilla
 
         try
-          templates.push compiler.call(this, src, window, key)
+          compiled = compiler.call(this, src, window, key)
         catch e
           grunt.fail.warn e
           # Warn on and remove invalid source files (if nonull was set).
           grunt.fail.warn "Emblem failed to compile " + filepath + "."
 
+        if isPartial(filepath)
+          key = JSON.stringify key.replace(/_/, '')
+          partials.push(
+            "Ember.Handlebars.registerPartial(#{key}, #{compiled});"
+          )
+        else
+          key = JSON.stringify(key)
+          templates.push("Ember.TEMPLATES[#{key}] = #{compiled};")
 
       output = partials.concat(templates)
 
@@ -57,7 +70,7 @@ module.exports = (grunt) ->
   writeOutput = (output, file, separator) ->
 
     grunt.file.write file.dest, output.join(
-      # grunt.util.normalizelf(separator)
+      grunt.util.normalizelf(separator)
     )
 
     grunt.log.writeln "File \"" + file.dest + "\" created."
@@ -79,11 +92,12 @@ module.exports = (grunt) ->
   # Ember Compilation
   ########################################################
   compileEmber = (src, window, key) ->
-    key = JSON.stringify(key)
-    content = window.Emblem.precompile window.Ember.Handlebars, src
-
-    " Ember.TEMPLATES[#{key}] = Ember.Handlebars.template(#{content});
-    module.exports = module.id"
+    compiled = window.Emblem.precompile(window.Ember.Handlebars, src)
+    if isPartialFilename(key)
+      compiled
+    else
+      grunt.log.warn "Not partial " + key
+      "Ember.Handlebars.template(#{compiled})"
 
   ########################################################
   # Key for given filepath
@@ -91,7 +105,7 @@ module.exports = (grunt) ->
   keyForFilePath = (filepath, root) ->
     key = filepath
       .replace(new RegExp('\\\\', 'g'), '/') #replace backslashes
-      .replace(/\.\w+$/, '')
+      .replace(/\.\w+$/, '') #remove extension
       .replace(root, '')
 
   ########################################################
@@ -105,3 +119,9 @@ module.exports = (grunt) ->
     else
       true
 
+  isPartial = (filepath) ->
+    isPartialFilename _.last filepath.split '/'
+
+  isPartialFilename = (filename) ->
+    regex = /^_/
+    regex.test(filename)

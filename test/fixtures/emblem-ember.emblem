@@ -9,3 +9,5 @@ with subcontext
   p
     | Here is a subcontext value:
     = value
+
+partial partial1

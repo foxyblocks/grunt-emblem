@@ -17,7 +17,10 @@ module.exports = (grunt) ->
     emblem:
       ember:
         files:
-          'tmp/emblem-ember.js': ['test/fixtures/emblem-ember.emblem']
+          'tmp/emblem-ember.js': [
+            'test/fixtures/_partial1.emblem',
+            'test/fixtures/emblem-ember.emblem'
+          ]
         options:
           root: 'test/fixtures/'
           paths:
@@ -37,7 +40,7 @@ module.exports = (grunt) ->
 
     simplemocha:
       options:
-        globals: ['should']
+        globals: ['should', 'helpers']
         timeout: 3000
         ignoreLeaks: false
         ui: 'bdd'

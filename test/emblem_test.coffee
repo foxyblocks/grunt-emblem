@@ -4,23 +4,22 @@ jsdom = require("jsdom")
 
 
 describe 'using compiled templates', ->
-  exampleView = undefined
-  renderedView = undefined
-
   before ->
-    exampleView = undefined
-    renderedView = undefined
+    @renderedView = undefined
 
-  describe 'with ember', ->
+  describe.only 'with ember', ->
     before (done) ->
       templates = grunt.file.read('tmp/emblem-ember.js')
 
       jsdom.env
-        html: "<div id=\"test\"></div>"
+        html: "<div id='test'></div>"
         src: [jQueryJs(), handlebarsJs(), emberJs(), templates]
         done: (errors, window) ->
+          should.not.exist(errors)
+
           $ = window.jQuery
           Ember = window.Ember
+
           Ember.Application.create()
           ExampleView = Ember.View.extend(templateName: "emblem-ember")
           exampleView = ExampleView.create(
@@ -34,23 +33,26 @@ describe 'using compiled templates', ->
           Ember.run ->
             exampleView.appendTo "#test"
 
-          renderedView = $("#test").text()
+          @renderedView = $("#test").text()
           done()
 
     it 'renders view values', ->
-      renderedView.should.include "a_value"
+      @renderedView.should.include "a_value"
 
     it "renders context values", ->
-      renderedView.should.include "context_value"
+      @renderedView.should.include "context_value"
 
     it "renders subcontexts values", ->
-      renderedView.should.include "subcontext_value"
+      @renderedView.should.include "subcontext_value"
+
+    it "renders partials", ->
+      @renderedView.should.include "partial_content"
 
   describe 'without ember', ->
     before (done) ->
       template = grunt.file.read('tmp/emblem-basic.js')
       jsdom.env
-        html: "<div id=\"test\"></div>"
+        html: "<div id='test'></div>"
         src: [jQueryJs(), handlebarsJs(), template]
         done: (errors, window) ->
           $ = window.jQuery
@@ -64,14 +66,15 @@ describe 'using compiled templates', ->
               value: 'subcontext_value'
 
           $("#test").append template(data)
-          renderedView = $("#test").text()
+          @renderedView = $("#test").text()
           done()
 
     it "renders context values", ->
-      renderedView.should.include "context_value"
+      @renderedView.should.include "context_value"
 
     it "renders subcontexts values", ->
-      renderedView.should.include "subcontext_value"
+      @renderedView.should.include "subcontext_value"
+
 
 ########################################
 # Helpers
