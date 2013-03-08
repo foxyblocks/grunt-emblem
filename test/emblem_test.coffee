@@ -3,11 +3,13 @@ grunt = require("grunt")
 jsdom = require("jsdom")
 
 
+renderedView = undefined
+
 describe 'using compiled templates', ->
   before ->
-    @renderedView = undefined
+    renderedView = null
 
-  describe.only 'with ember', ->
+  describe 'with ember', ->
     before (done) ->
       templates = grunt.file.read('tmp/emblem-ember.js')
 
@@ -33,20 +35,20 @@ describe 'using compiled templates', ->
           Ember.run ->
             exampleView.appendTo "#test"
 
-          @renderedView = $("#test").text()
+          renderedView = $("#test").text()
           done()
 
     it 'renders view values', ->
-      @renderedView.should.include "a_value"
+      renderedView.should.include "a_value"
 
     it "renders context values", ->
-      @renderedView.should.include "context_value"
+      renderedView.should.include "context_value"
 
     it "renders subcontexts values", ->
-      @renderedView.should.include "subcontext_value"
+      renderedView.should.include "subcontext_value"
 
     it "renders partials", ->
-      @renderedView.should.include "partial_content"
+      renderedView.should.include "partial_content"
 
   describe 'without ember', ->
     before (done) ->
@@ -66,14 +68,14 @@ describe 'using compiled templates', ->
               value: 'subcontext_value'
 
           $("#test").append template(data)
-          @renderedView = $("#test").text()
+          renderedView = $("#test").text()
           done()
 
     it "renders context values", ->
-      @renderedView.should.include "context_value"
+      renderedView.should.include "context_value"
 
     it "renders subcontexts values", ->
-      @renderedView.should.include "subcontext_value"
+      renderedView.should.include "subcontext_value"
 
 
 ########################################

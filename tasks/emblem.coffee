@@ -28,7 +28,6 @@ module.exports = (grunt) ->
     grunt.verbose.writeflags(options, 'Options')
 
     @files.forEach (f) ->
-      partials = []
       templates = []
 
       # iterate files, processing partials and templates separately
@@ -45,23 +44,14 @@ module.exports = (grunt) ->
           # Warn on and remove invalid source files (if nonull was set).
           grunt.fail.warn "Emblem failed to compile " + filepath + "."
 
-        if isPartial(filepath)
-          key = JSON.stringify key.replace(/_/, '')
-          partials.push(
-            "Ember.Handlebars.registerPartial(#{key}, #{compiled});"
-          )
-        else
-          key = JSON.stringify(key)
-          templates.push("Ember.TEMPLATES[#{key}] = #{compiled};")
+        templates.push(compiled)
 
-      output = partials.concat(templates)
-
-      if output.length < 1
+      if templates.length < 1
         grunt.log.warn "
           Destination not written because compiled
           files were empty."
       else
-        writeOutput(output, f, options.separator)
+        writeOutput(templates, f, options.separator)
 
 
   ########################################################
@@ -92,12 +82,10 @@ module.exports = (grunt) ->
   # Ember Compilation
   ########################################################
   compileEmber = (src, window, key) ->
+    key = JSON.stringify(key)
     compiled = window.Emblem.precompile(window.Ember.Handlebars, src)
-    if isPartialFilename(key)
-      compiled
-    else
-      grunt.log.warn "Not partial " + key
-      "Ember.Handlebars.template(#{compiled})"
+    template = "Ember.Handlebars.template(#{compiled})"
+    "Ember.TEMPLATES[#{key}] = #{template};"
 
   ########################################################
   # Key for given filepath
