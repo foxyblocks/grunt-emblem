@@ -12,7 +12,7 @@
     "matchdep": "~0.1.1",
     "should": "~1.2.2",
     "grunt-contrib-clean": "~0.4.0",
-    "grunt-contrib-coffee": "~0.4.1",
+    "grunt-contrib-coffee": "~0.6.0",
     "handlebars": "~1.0.9",
     "grunt-contrib-watch": "~0.2.0",
     "coffee-script": "~1.5.0"
