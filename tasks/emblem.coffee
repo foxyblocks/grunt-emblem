@@ -20,9 +20,9 @@ module.exports = (grunt) ->
     window.run grunt.file.read options.paths.emblem, 'utf8'
     if options.paths.ember
       window.run grunt.file.read options.paths.ember, 'utf8'
-      emberEnabled = true
+      templateBuilder = new EmberBuilder(window, rootPath: options.root)
     else
-      emberEnabled = false
+      templateBuilder = new VanillaBuilder(window, rootPath: options.root)
 
 
     grunt.verbose.writeflags(options, 'Options')
@@ -33,18 +33,13 @@ module.exports = (grunt) ->
       # iterate files, processing partials and templates separately
       f.src.filter(fileExists).forEach (filepath) ->
         src = grunt.file.read(filepath)
-        key = keyForFilePath(filepath, options.root)
-
-        compiler = if emberEnabled then compileEmber else compileVanilla
 
         try
-          compiled = compiler.call(this, src, window, key)
+          templates.push templateBuilder.build(src, filepath)
         catch e
           grunt.fail.warn e
           # Warn on and remove invalid source files (if nonull was set).
           grunt.fail.warn "Emblem failed to compile " + filepath + "."
-
-        templates.push(compiled)
 
       if templates.length < 1
         grunt.log.warn "
@@ -67,36 +62,6 @@ module.exports = (grunt) ->
 
 
   ########################################################
-  # Vanilla Compilation -
-  # Compiles the file at provided filepath and returns the output
-  ########################################################
-  compileVanilla = (src, window, key) ->
-    content = window.Emblem.precompile window.Handlebars, src
-
-    """
-    var templates = Handlebars.templates = Handlebars.templates || {};
-    templates['#{key}'] = Handlebars.template(#{content});
-    """
-
-  ########################################################
-  # Ember Compilation
-  ########################################################
-  compileEmber = (src, window, key) ->
-    key = JSON.stringify(key)
-    compiled = window.Emblem.precompile(window.Ember.Handlebars, src)
-    template = "Ember.Handlebars.template(#{compiled})"
-    "Ember.TEMPLATES[#{key}] = #{template};"
-
-  ########################################################
-  # Key for given filepath
-  ########################################################
-  keyForFilePath = (filepath, root) ->
-    key = filepath
-      .replace(new RegExp('\\\\', 'g'), '/') #replace backslashes
-      .replace(/\.\w+$/, '') #remove extension
-      .replace(root, '')
-
-  ########################################################
   # Filters out missing files
   ########################################################
 
@@ -107,9 +72,34 @@ module.exports = (grunt) ->
     else
       true
 
-  isPartial = (filepath) ->
-    isPartialFilename _.last filepath.split '/'
 
-  isPartialFilename = (filename) ->
-    regex = /^_/
-    regex.test(filename)
+########################################################
+# TODO extract these classes
+########################################################
+class TemplateBuilder
+  constructor: (window, options = {}) ->
+    @window = window
+    @rootPath = options?.rootPath
+
+  keyForFilePath: (filepath) ->
+    filepath
+      .replace(new RegExp('\\\\', 'g'), '/') #replace backslashes
+      .replace(/\.\w+$/, '') #remove extension
+      .replace(@rootPath, '')
+
+class EmberBuilder extends TemplateBuilder
+  build: (src, filepath) ->
+    key = JSON.stringify @keyForFilePath(filepath)
+    compiled = @window.Emblem.precompile(@window.Ember.Handlebars, src)
+    template = "Ember.Handlebars.template(#{compiled})"
+    "Ember.TEMPLATES[#{key}] = #{template};"
+
+class VanillaBuilder extends TemplateBuilder
+  build: (src, filepath) ->
+    key = @keyForFilePath(filepath)
+    content = @window.Emblem.precompile @window.Handlebars, src
+
+    """
+    var templates = Handlebars.templates = Handlebars.templates || {};
+    templates['#{key}'] = Handlebars.template(#{content});
+    """
