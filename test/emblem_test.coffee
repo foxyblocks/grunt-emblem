@@ -1,14 +1,6 @@
-should = require("should")
-grunt = require("grunt")
-jsdom = require("jsdom")
-
-
 renderedView = undefined
 
 describe 'using compiled templates', ->
-  before ->
-    renderedView = null
-
   describe 'with ember', ->
     before (done) ->
       templates = grunt.file.read('tmp/emblem-ember.js')
@@ -17,8 +9,7 @@ describe 'using compiled templates', ->
         html: "<div id='test'></div>"
         src: [jQueryJs(), handlebarsJs(), emberJs(), templates]
         done: (errors, window) ->
-          should.not.exist(errors)
-
+          grunt.fail.warn(errors) if errors?
           $ = window.jQuery
           Ember = window.Ember
 
@@ -76,18 +67,5 @@ describe 'using compiled templates', ->
 
     it "renders subcontexts values", ->
       renderedView.should.include "subcontext_value"
-
-
-########################################
-# Helpers
-#######################################
-
-jQueryJs = -> vendorScript "/jquery-1.9.1.js"
-handlebarsJs = -> vendorScript "/handlebars-1.0.0-rc.3.js"
-emberJs = -> vendorScript "/ember-1.0.0-rc.1.js"
-
-vendorScript = (path) ->
-  vendorDir = __dirname + "/vendor"
-  grunt.file.read(vendorDir + path, "utf8")
 
 
