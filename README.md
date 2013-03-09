@@ -21,7 +21,7 @@ grunt.loadNpmTasks('emblem-grunt');
 ### Options
 
 #### dependencies
-Type: 'Object'
+Type: `Object`
 
 In order to avoid conflicts with your existing libraries this plugin does not provide it's own copies of handlebars, ember, emblem, or jquery. Specify the paths to your own copies in the grunt options for each of the following:
 
@@ -40,7 +40,8 @@ then the template's name will be `posts/teaser`
 
 #### separator (optional)
 Type: `String`
-Default: linefeed
+
+Default: `linefeed`
 
 Concatenated files will be joined on this string.
 
