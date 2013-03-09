@@ -23,7 +23,7 @@ module.exports = (grunt) ->
           ]
         options:
           root: 'test/fixtures/'
-          paths:
+          dependencies:
             jquery: 'test/vendor/jquery-1.9.1.js'
             ember: 'test/vendor/ember-1.0.0-rc.1.js'
             emblem: 'test/vendor/emblem.js'
@@ -33,8 +33,7 @@ module.exports = (grunt) ->
           'tmp/emblem-basic.js': ['test/fixtures/emblem-basic.emblem']
         options:
           root: 'test/fixtures/'
-          paths:
-            jquery: 'test/vendor/jquery-1.9.1.js'
+          dependencies:
             emblem: 'test/vendor/emblem.js'
             handlebars: 'test/vendor/handlebars-1.0.0-rc.3.js'
 
@@ -45,10 +44,12 @@ module.exports = (grunt) ->
         ignoreLeaks: false
         ui: 'bdd'
         reporter: 'spec'
+        require: 'test/test_helper.coffee'
 
-      all: { src: 'test/**/*.coffee' }
+      all:
+        src: ['test/test_helper.coffee','test/**/*.coffee']
 
   # Load the plugin that provides the "uglify" task.
-  grunt.registerTask('test', ['clean', 'emblem', 'simplemocha'])
+  grunt.registerTask('test', ['clean', 'emblem', 'simplemocha:all'])
 
   # Default task(s).

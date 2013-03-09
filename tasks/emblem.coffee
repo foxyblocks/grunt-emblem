@@ -12,14 +12,15 @@ module.exports = (grunt) ->
       separator: grunt.util.linefeed + grunt.util.linefeed
     )
 
+    dependencies = options.dependencies
 
-    if options.paths.jquery
-      window.run grunt.file.read options.paths.jquery, 'utf8'
+    if dependencies.jquery
+      window.run grunt.file.read dependencies.jquery, 'utf8'
 
-    window.run grunt.file.read options.paths.handlebars, 'utf8'
-    window.run grunt.file.read options.paths.emblem, 'utf8'
-    if options.paths.ember
-      window.run grunt.file.read options.paths.ember, 'utf8'
+    window.run grunt.file.read dependencies.handlebars, 'utf8'
+    window.run grunt.file.read dependencies.emblem, 'utf8'
+    if dependencies.ember
+      window.run grunt.file.read dependencies.ember, 'utf8'
       templateBuilder = new EmberBuilder(window, rootPath: options.root)
     else
       templateBuilder = new VanillaBuilder(window, rootPath: options.root)
