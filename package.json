@@ -1,6 +1,25 @@
 {
   "name": "emblem-grunt",
+  "description": "Grunt task for the emblem.js templating language",
+  "homepage": "https://github.com/wordofchristian/emblem-grunt",
   "version": "0.1.0",
+  "author": {
+    "name": "Christian Schlensker",
+    "email": "christian@cswebartisan.com",
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wordofchristian/emblem-grunt.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/wordofchristian/emblem-grunt/blob/master/LICENSE-MIT"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/wordofchristian/emblem-grunt/issues"
+  },
   "scripts": {
     "test": "grunt --debug-brk $(which grunt) --stack test"
   },
@@ -18,6 +37,15 @@
     "coffee-script": "~1.5.0"
   },
   "dependencies": {
-    "emblem": "~0.1.6"
-  }
+    "grunt": "~0.4.0",
+    "grunt-lib-contrib": "~0.5.1"
+  },
+  "keywords": [
+    "gruntplugin",
+    "ember",
+    "emblem",
+    "handlebars",
+    "templates",
+    "precompile"
+  ]
 }
