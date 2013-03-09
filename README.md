@@ -48,28 +48,42 @@ Concatenated files will be joined on this string.
 
 #### Ember.js
 
-    emblem:
-      compile:
-        files:
-          'path/to/result.js': 'path/to/source.emblem', // 1:1 compile
-          'path/to/another.js': ['path/to/sources/*.emblem', 'path/to/more/*.emblem'] // compile and concat into single file
-        options:
-          root: 'app/templates/'
-          dependencies:
-            jquery: 'vendor/jquery-1.9.1.js'
-            ember: 'vendor/ember-1.0.0-rc.1.js'
-            emblem: 'vendor/emblem.js'
-            handlebars: 'vendor/handlebars-1.0.0-rc.3.js'
+    grunt.initConfig({
+      emblem: {
+        compile: {
+          files: {
+            'path/to/result.js': 'path/to/source.emblem', //1:1 compile
+            'path/to/another.js': ['path/to/sources/*.emblem', 'path/to/more/*.emblem'] //compile and concat into single file
+          },
+          options: {
+            root: 'app/templates/',
+            dependencies: {
+              jquery: 'vendor/jquery-1.9.1.js',
+              ember: 'vendor/ember-1.0.0-rc.1.js',
+              emblem: 'vendor/emblem.js',
+              handlebars: 'vendor/handlebars-1.0.0-rc.3.js'
+            }
+          }
+        }
+      }
+    });
 
 #### Vanilla Handlebars.js
 
-    emblem:
-      compile:
-        files:
-          'path/to/result.js': 'path/to/source.emblem', // 1:1 compile
-          'path/to/another.js': ['path/to/sources/*.emblem', 'path/to/more/*.emblem'] // compile and concat into single file
-        options:
-          root: 'app/templates/'
-          dependencies:
-            emblem: 'vendor/emblem.js'
-            handlebars: 'vendor/handlebars-1.0.0-rc.3.js'
+    grunt.initConfig({
+      emblem: {
+        compile: {
+          files: {
+            'path/to/result.js': 'path/to/source.emblem', //1:1 compile
+            'path/to/another.js': ['path/to/sources/*.emblem', 'path/to/more/*.emblem'] //compile and concat into single file
+          },
+          options: {
+            root: 'app/templates/',
+            dependencies: {
+              emblem: 'vendor/emblem.js',
+              handlebars: 'vendor/handlebars-1.0.0-rc.3.js'
+            }
+          }
+        }
+      }
+    });
