@@ -1,7 +1,7 @@
 {
-  "name": "emblem-grunt",
+  "name": "grunt-emblem",
   "description": "Grunt task for the emblem.js templating language",
-  "homepage": "https://github.com/wordofchristian/emblem-grunt",
+  "homepage": "https://github.com/wordofchristian/grunt-emblem",
   "version": "0.1.0",
   "author": {
     "name": "Christian Schlensker",
@@ -9,16 +9,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/wordofchristian/emblem-grunt.git"
+    "url": "git://github.com/wordofchristian/grunt-emblem.git"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/wordofchristian/emblem-grunt/blob/master/LICENSE-MIT"
+      "url": "https://github.com/wordofchristian/grunt-emblem/blob/master/LICENSE-MIT"
     }
   ],
   "bugs": {
-    "url": "https://github.com/wordofchristian/emblem-grunt/issues"
+    "url": "https://github.com/wordofchristian/grunt-emblem/issues"
   },
   "scripts": {
     "test": "grunt --debug-brk $(which grunt) --stack test"
