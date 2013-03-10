@@ -20,6 +20,10 @@
   "bugs": {
     "url": "https://github.com/wordofchristian/grunt-emblem/issues"
   },
+  "main": "Gruntfile.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
   "scripts": {
     "test": "grunt --debug-brk $(which grunt) --stack test"
   },
@@ -27,7 +31,6 @@
     "grunt": "~0.4.0",
     "mocha": "1.4.x",
     "grunt-simple-mocha": "0.3.x",
-    "jsdom": "0.2.x",
     "matchdep": "~0.1.1",
     "should": "~1.2.2",
     "grunt-contrib-clean": "~0.4.0",
@@ -38,7 +41,8 @@
   },
   "dependencies": {
     "grunt": "~0.4.0",
-    "grunt-lib-contrib": "~0.5.1"
+    "grunt-lib-contrib": "~0.5.1",
+    "jsdom": "~0.5.1"
   },
   "keywords": [
     "gruntplugin",
