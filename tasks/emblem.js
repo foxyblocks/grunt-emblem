@@ -143,7 +143,7 @@ module.exports = function(grunt) {
       key = JSON.stringify(this.keyForFilePath(filepath));
       compiled = this.window.Emblem.precompile(this.window.Ember.Handlebars, src);
       template = "Ember.Handlebars.template(" + compiled + ")";
-      return "Ember.TEMPLATES[" + key + "] = " + template + ";";
+      return "Ember.TEMPLATES[" + key.replace(/^"\//, '"') + "] = " + template + ";";
     };
 
     return EmberBuilder;
