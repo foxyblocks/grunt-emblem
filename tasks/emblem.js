@@ -74,6 +74,12 @@ module.exports = function(grunt) {
       if (templates.length < 1) {
         grunt.log.warn("Destination not written because compiled files were empty.");
       } else {
+
+        if (options.amd) {
+          templates.unshift('define(["ember"], function(Ember){');
+          templates.push('});');
+        }
+
         writeOutput(templates, f, options.separator);
       }
     });
